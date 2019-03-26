@@ -18,4 +18,9 @@ RUN apk add \
       salt-ssh \
       salt-syndic
 
+VOLUME /etc/salt
+
+EXPOSE 4505/tcp
+EXPOSE 4506/tcp
+
 CMD salt-master --log-level "$SALT_LOG_LEVEL"
