@@ -2,6 +2,8 @@ FROM python:3.7-alpine
 
 MAINTAINER Chris Fordham <chris@fordham.id.au>
 
+ENV SALT_LOG_LEVEL=info
+
 # https://pkgs.alpinelinux.org/package/edge/community/x86_64/salt
 RUN apk add \
     --update \
@@ -16,4 +18,4 @@ RUN apk add \
       salt-ssh \
       salt-syndic
 
-CMD ["salt-master"]
+CMD salt-master --log-level "$SALT_LOG_LEVEL"
