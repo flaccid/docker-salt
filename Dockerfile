@@ -2,6 +2,7 @@ FROM python:3.7-alpine
 
 MAINTAINER Chris Fordham <chris@fordham.id.au>
 
+ENV STACK_ROLE=salt-master
 ENV SALT_LOG_LEVEL=info
 
 # https://pkgs.alpinelinux.org/package/edge/community/x86_64/salt
@@ -23,4 +24,4 @@ VOLUME /etc/salt
 EXPOSE 4505/tcp
 EXPOSE 4506/tcp
 
-CMD salt-master --log-level "$SALT_LOG_LEVEL"
+CMD "$STACK_ROLE" --log-level "$SALT_LOG_LEVEL"
