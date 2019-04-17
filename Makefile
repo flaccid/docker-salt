@@ -16,9 +16,12 @@ push:: ## Pushes the docker image to the registry
 		@docker push $(IMAGE_TAG)
 
 build:: ## Builds the docker image locally
+		@echo http_proxy=$(HTTP_PROXY) http_proxy=$(HTTPS_PROXY)
 		@echo building $(IMAGE_TAG)
 		@docker build --pull \
-		-t $(IMAGE_TAG) $(WORKING_DIR)
+			--build-arg=http_proxy=$(HTTP_PROXY) \
+			--build-arg=https_proxy=$(HTTPS_PROXY) \
+			-t $(IMAGE_TAG) $(WORKING_DIR)
 
 run:: ## Runs the docker image locally
 		@docker run \
