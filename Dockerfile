@@ -17,9 +17,12 @@ RUN apk add \
       salt-master \
       salt-minion \
       salt-ssh \
-      salt-syndic
+      salt-syndic && \
+    mkdir -p /etc/salt/pki
 
-VOLUME /etc/salt
+VOLUME /etc/salt/pki
+VOLUME /var/cache/salt
+VOLUME /var/logs/salt
 
 EXPOSE 4505/tcp
 EXPOSE 4506/tcp
