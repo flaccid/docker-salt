@@ -1,6 +1,6 @@
 # docker-salt
 
-:whale: A Docker image for Salt (SaltStack Platform)
+:whale: A Docker image for Salt (the SaltStack Platform).
 
 ## Usage
 
@@ -16,7 +16,7 @@ In the image, we do not expose `/etc/salt` due to volume overlap with child
 directories such as `/etc/salt/pki`. In runtime, you can however create
 additional directories as desired.
 
-- `/etc/salt/pki` - certificate/key store used for signed minions
+- `/etc/salt/pki` - pki store used for master and minions
 - `/var/cache/salt` - general salt cache files
 - `/var/logs/salt` - salt logs
 
