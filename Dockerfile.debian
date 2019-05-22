@@ -1,0 +1,32 @@
+FROM python:3.7-stretch
+
+MAINTAINER Chris Fordham <chris@fordham.id.au>
+
+ENV STACK_ROLE=salt-master
+ENV SALT_LOG_LEVEL=info
+
+RUN apt-get update && \
+    apt-get -y install curl && \
+    curl -SsL https://repo.saltstack.com/apt/debian/9/amd64/latest/SALTSTACK-GPG-KEY.pub | apt-key add - && \
+    echo 'deb http://repo.saltstack.com/apt/debian/9/amd64/latest stretch main' > /etc/apt/sources.list.d/saltstack.list && \
+    apt-get update && \
+    apt-get -y install \
+      git \
+      salt-doc \
+      salt-master \
+      salt-minion \
+      salt-ssh \
+      salt-syndic \
+      salt-cloud \
+      salt-api && \
+    rm -rf /var/lib/apt/lists/* && \
+    mkdir -p /etc/salt/pki
+
+VOLUME /etc/salt/pki
+VOLUME /var/cache/salt
+VOLUME /var/logs/salt
+
+EXPOSE 4505/tcp
+EXPOSE 4506/tcp
+
+CMD "$STACK_ROLE" --log-level "$SALT_LOG_LEVEL"

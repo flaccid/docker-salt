@@ -23,6 +23,18 @@ build:: ## Builds the docker image locally
 			--build-arg=https_proxy=$(HTTPS_PROXY) \
 			-t $(IMAGE_TAG) $(WORKING_DIR)
 
+build-deb:: ## Builds the docker image locally (debian)
+		@echo http_proxy=$(HTTP_PROXY) http_proxy=$(HTTPS_PROXY)
+		@docker build \
+			--pull \
+		 	--file Dockerfile.debian \
+			--build-arg=http_proxy=$(HTTP_PROXY) \
+			--build-arg=https_proxy=$(HTTPS_PROXY) \
+			-t $(DOCKER_REGISTRY)/$(IMAGE_ORG)/$(IMAGE_NAME):deb $(WORKING_DIR)
+
+push-deb:: ## pushes the debian version of the image
+		@docker push $(DOCKER_REGISTRY)/$(IMAGE_ORG)/$(IMAGE_NAME):deb
+
 run:: ## Runs the docker image locally
 		@docker run \
 			-it \
