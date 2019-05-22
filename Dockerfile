@@ -1,4 +1,4 @@
-FROM python:3.7-alpine
+FROM alpine:edge
 
 MAINTAINER Chris Fordham <chris@fordham.id.au>
 
