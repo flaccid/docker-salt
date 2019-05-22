@@ -10,6 +10,7 @@ RUN apk add \
     --update \
     --no-cache \
     --repository http://dl-cdn.alpinelinux.org/alpine/edge/community \
+      git \
       salt \
       salt-api \
       salt-cloud \
