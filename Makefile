@@ -10,12 +10,12 @@ WORKING_DIR := $(shell pwd)
 
 .PHONY: build push
 
-release:: build push ## Builds and pushes the docker image to the registry
+release:: build push ## builds and pushes the docker image to the registry
 
-push:: ## Pushes the docker image to the registry
+push:: ## pushes the docker image to the registry
 		@docker push $(IMAGE_TAG)
 
-build:: ## Builds the docker image locally
+build:: ## builds the docker image locally
 		@echo http_proxy=$(HTTP_PROXY) http_proxy=$(HTTPS_PROXY)
 		@echo building $(IMAGE_TAG)
 		@docker build --pull \
@@ -23,7 +23,7 @@ build:: ## Builds the docker image locally
 			--build-arg=https_proxy=$(HTTPS_PROXY) \
 			-t $(IMAGE_TAG) $(WORKING_DIR)
 
-build-deb:: ## Builds the docker image locally (debian)
+build-deb:: ## builds the docker image locally (debian)
 		@echo http_proxy=$(HTTP_PROXY) http_proxy=$(HTTPS_PROXY)
 		@docker build \
 			--pull \
@@ -35,19 +35,36 @@ build-deb:: ## Builds the docker image locally (debian)
 push-deb:: ## pushes the debian version of the image
 		@docker push $(DOCKER_REGISTRY)/$(IMAGE_ORG)/$(IMAGE_NAME):deb
 
-run:: ## Runs the docker image locally
+build-dev:: ## builds the docker image locally (devel version)
+		@echo http_proxy=$(HTTP_PROXY) http_proxy=$(HTTPS_PROXY)
+		@docker build \
+			--pull \
+		 	--file Dockerfile.dev \
+			--build-arg=http_proxy=$(HTTP_PROXY) \
+			--build-arg=https_proxy=$(HTTPS_PROXY) \
+			-t $(DOCKER_REGISTRY)/$(IMAGE_ORG)/$(IMAGE_NAME):dev $(WORKING_DIR)
+
+push-dev:: ## pushes the dev version of the image
+		@docker push $(DOCKER_REGISTRY)/$(IMAGE_ORG)/$(IMAGE_NAME):dev
+
+run-dev:: ## runs the dev version of the docker image locally
+	@docker run \
+		-it \
+		$(DOCKER_REGISTRY)/$(IMAGE_ORG)/$(IMAGE_NAME):dev
+
+run:: ## runs the docker image locally
 		@docker run \
 			-it \
 			$(DOCKER_REGISTRY)/$(IMAGE_ORG)/$(IMAGE_NAME):$(IMAGE_VERSION)
 
-# A help target including self-documenting targets (see the awk statement)
+# a help target including self-documenting targets (see the awk statement)
 define HELP_TEXT
 Usage: make [TARGET]... [MAKEVAR1=SOMETHING]...
 
 Available targets:
 endef
 export HELP_TEXT
-help: ## This help target
+help: ## this help target
 	@cat .banner
 	@echo
 	@echo "$$HELP_TEXT"

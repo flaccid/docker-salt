@@ -1,0 +1,45 @@
+# rewrite of https://github.com/saltstack/saltdocker
+FROM alpine:latest
+ARG SALT_VERSION=2019.2.0
+ADD https://raw.githubusercontent.com/saltstack/saltdocker/master/saltinit.py \
+      /usr/local/bin/saltinit
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN addgroup -g 450 -S salt && \
+    adduser -s /bin/sh -SD -G salt salt && \
+    mkdir -p \
+      /etc/pki \
+      /etc/salt/pki \
+      /etc/salt/minion.d/ \
+      /etc/salt/master.d \
+      /etc/salt/proxy.d \
+      /var/cache/salt \
+      /var/log/salt \
+      /var/run/salt && \
+    chmod -R 2775 \
+      /etc/pki \
+      /etc/salt \
+      /var/cache/salt \
+      /var/log/salt \
+      /var/run/salt && \
+    chgrp -R salt \
+      /etc/pki \
+      /etc/salt \
+      /var/cache/salt \
+      /var/log/salt \
+      /var/run/salt && \
+    apk add --no-cache --update \
+      autoconf \
+      g++ \
+      gcc \
+      linux-headers \
+      py3-openssl \
+      python3 \
+      python3-dev && \
+    chmod +x /usr/local/bin/saltinit && \
+    pip3 install --upgrade pip && \
+    pip3 install --no-cache-dir salt=="$SALT_VERSION" pycryptodomex CherryPy
+
+VOLUME /etc/salt/pki
+EXPOSE 4505 4506 8000
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
+CMD ["/usr/local/bin/saltinit"]
