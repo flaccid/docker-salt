@@ -11,6 +11,8 @@ RUN apk add \
     --no-cache \
     --repository http://dl-cdn.alpinelinux.org/alpine/edge/community \
       git \
+      py2-pip \
+      py3-pygit2 \
       salt \
       salt-api \
       salt-cloud \
@@ -19,7 +21,8 @@ RUN apk add \
       salt-minion \
       salt-ssh \
       salt-syndic && \
-    mkdir -p /etc/salt/pki
+    mkdir -p /etc/salt/pki && \
+    pip3 install GitPython
 
 VOLUME /etc/salt/pki
 VOLUME /var/cache/salt
