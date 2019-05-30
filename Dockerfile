@@ -11,7 +11,7 @@ RUN apk add \
     --no-cache \
     --repository http://dl-cdn.alpinelinux.org/alpine/edge/community \
       git \
-      py2-pip \
+      py3-pip \
       py3-pygit2 \
       salt \
       salt-api \
