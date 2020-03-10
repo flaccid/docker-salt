@@ -3,7 +3,7 @@ FROM alpine:latest
 ARG SALT_VERSION=2019.2.0
 ADD https://raw.githubusercontent.com/saltstack/saltdocker/master/saltinit.py \
       /usr/local/bin/saltinit
-COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+COPY docker-entrypoint.dev.sh /usr/local/bin/docker-entrypoint.sh
 RUN addgroup -g 450 -S salt && \
     adduser -s /bin/sh -SD -G salt salt && \
     mkdir -p \
