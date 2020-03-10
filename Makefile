@@ -47,15 +47,55 @@ build-dev:: ## builds the docker image locally (devel version)
 push-dev:: ## pushes the dev version of the image
 		@docker push $(DOCKER_REGISTRY)/$(IMAGE_ORG)/$(IMAGE_NAME):dev
 
-run-dev:: ## runs the dev version of the docker image locally
-	@docker run \
-		-it \
-		$(DOCKER_REGISTRY)/$(IMAGE_ORG)/$(IMAGE_NAME):dev
-
 run:: ## runs the docker image locally
 		@docker run \
 			-it \
-			$(DOCKER_REGISTRY)/$(IMAGE_ORG)/$(IMAGE_NAME):$(IMAGE_VERSION)
+			--rm \
+			--name salt \
+			-e http_proxy=$(HTTP_PROXY) \
+			-e https_proxy=$(HTTPS_PROXY) \
+			-e no_proxy=localhost,127.0.0.1 \
+				$(DOCKER_REGISTRY)/$(IMAGE_ORG)/$(IMAGE_NAME):$(IMAGE_VERSION)
+
+run-dev:: ## runs the dev version of the docker image locally
+		@docker run \
+			-it \
+			--rm \
+			--name salt \
+				$(DOCKER_REGISTRY)/$(IMAGE_ORG)/$(IMAGE_NAME):dev
+
+run-full:: ## runs the docker image locally with all opinionated options
+		@docker run \
+			-it \
+			--rm \
+			--name salt \
+			-e http_proxy=$(HTTP_PROXY) \
+			-e https_proxy=$(HTTPS_PROXY) \
+			-e no_proxy=localhost,127.0.0.1 \
+			-e SALT_API=true \
+			-e TLS_SELF_SIGNED=true \
+				$(DOCKER_REGISTRY)/$(IMAGE_ORG)/$(IMAGE_NAME):$(IMAGE_VERSION)
+
+run-test:: ## runs the docker image locally with opinionated options for testing
+		@docker run \
+			-it \
+			--rm \
+			--name salt \
+			-e http_proxy=$(HTTP_PROXY) \
+			-e https_proxy=$(HTTPS_PROXY) \
+			-e no_proxy=localhost,127.0.0.1 \
+			-e ENABLE_PAM_EAUTH=true \
+			-e SALT_API=true \
+			-e SALT_API_SSL=false \
+			-e SALT_PASSWORD=salt \
+			-p 8000:8000 \
+				$(DOCKER_REGISTRY)/$(IMAGE_ORG)/$(IMAGE_NAME):$(IMAGE_VERSION)
+
+exec-shell:: ## executs a shell on the running docker container
+		@docker exec \
+			-it \
+      salt \
+			/bin/sh
 
 # a help target including self-documenting targets (see the awk statement)
 define HELP_TEXT
