@@ -2,10 +2,17 @@ FROM python:3.7-stretch
 
 MAINTAINER Chris Fordham <chris@fordham.id.au>
 
-ENV STACK_ROLE=salt-master
+ENV ENABLE_PAM_EAUTH=false
+ENV SALT_API=false
 ENV SALT_LOG_LEVEL=info
+ENV STACK_ROLE=salt-master
+ENV TLS_SELF_SIGNED=false
 
-RUN apt-get update && \
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+
+RUN addgroup --gid 450 salt && \
+    adduser --shell /bin/sh --ingroup salt --disabled-password --gecos "" salt && \
+    apt-get update && \
     apt-get -y install curl && \
     curl -SsL https://repo.saltstack.com/apt/debian/9/amd64/latest/SALTSTACK-GPG-KEY.pub | apt-key add - && \
     echo 'deb http://repo.saltstack.com/apt/debian/9/amd64/latest stretch main' > /etc/apt/sources.list.d/saltstack.list && \
@@ -20,7 +27,9 @@ RUN apt-get update && \
       salt-cloud \
       salt-api && \
     rm -rf /var/lib/apt/lists/* && \
-    mkdir -p /etc/salt/pki
+    mkdir -p /etc/salt/pki && \
+    sed -i "s/#default_include/default_include/g" /etc/salt/master && \
+    pip3 install CherryPy
 
 VOLUME /etc/salt/pki
 VOLUME /var/cache/salt
@@ -28,5 +37,7 @@ VOLUME /var/logs/salt
 
 EXPOSE 4505/tcp
 EXPOSE 4506/tcp
+
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 
 CMD "$STACK_ROLE" --log-level "$SALT_LOG_LEVEL"
