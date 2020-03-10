@@ -1,8 +1,13 @@
 #!/bin/sh -e
 
-# salt-api
-# requires CherryPy PyOpenSSL and
+# salt-api requires CherryPy PyOpenSSL
 # https://docs.saltstack.com/en/latest/ref/netapi/all/salt.netapi.rest_cherrypy.html
+
+: ${ENABLE_PAM_EAUTH:=false}
+: ${SALT_API:=false}
+: ${SALT_API_SSL:=false}
+: ${SALT_PASSWORD:=}
+: ${TLS_SELF_SIGNED:=false}
 
 mkdir -p /etc/salt/master.d
 
@@ -33,7 +38,7 @@ if [ "$SALT_API" = 'true' ]; then
     disable_ssl='disable_ssl: False'
   fi
 
-  if [ ! -e "$SALT_PASSWORD" ]; then
+  if [ ! -z "$SALT_PASSWORD" ]; then
     echo 'updating password for salt user'
     echo "salt:$SALT_PASSWORD" | chpasswd
   fi
