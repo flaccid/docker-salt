@@ -6,6 +6,7 @@
 
 ### Environment Variables
 
+- `ENABLE_CHERRYPY` - whether to enable and configure cherrypy for salt-api (default: `false`)
 - `ENABLE_PAM_EAUTH` - whether to enable or disable PAM auth (default: `false`)
 - `SALT_API` - whether to enable or disable the salt api server (default: `false`)
 - `SALT_API_SSL` - whether to enable or disable salt api server SSL (default: `false`)
